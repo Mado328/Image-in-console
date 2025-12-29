@@ -101,7 +101,7 @@ void Image::Read(const char* path) {
     f.close();
 
     std::cout << "File read\n";
-    convertToBlackAndWhite();
+    //convertToBlackAndWhite();
 }
 void Image::convertToBlackAndWhite() {
         for (int y = 0; y < m_height; ++y) {
@@ -138,19 +138,14 @@ void Image::WriteBMP() const{
             const float red = m_colors[y * m_width + x].r;
 
             const double brightness = (red + green + blue) / 3.0;
-
-            if (brightness < 0.25) {
-                std::cout << " ";
-            }
-            else if (brightness < 0.5) {
-                std::cout << "*";
-            }
-            else if (brightness < 0.75) {
-                std::cout << "#";
-            }
-            else {
-                std::cout << "@";
-            }
+            static const char* symbols[] = {
+                "@","$","&","G","B","R","P","P","0","8","6","I","v","+",":","~",",","."," "
+            };
+            const int levels = static_cast<int>(sizeof(symbols) / sizeof(symbols[0]));
+            int idx = static_cast<int>((1.0 - brightness) * levels);
+            if (idx < 0) idx = 0;
+            if (idx >= levels) idx = levels - 1;
+            std::cout << symbols[idx];
         }
         std::cout << std::endl;
     }
